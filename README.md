@@ -50,8 +50,8 @@ This project is for learning purposes.
 
 1. Clone the repository:
    ```bash
-git clone https://github.com/20Arwa/carHub.git
-   cd carHub
+    git clone https://github.com/20Arwa/carHub.git
+    cd carHub
 
 2. Install dependencies:
     ```bash

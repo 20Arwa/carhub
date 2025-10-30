@@ -33,7 +33,7 @@ const Header = () => {
             onClick={handleMood}
             >
             <Sun
-                size={25}
+                size={20}
                 strokeWidth={2}
                 className={`z-10 ${
                 resolvedTheme === "light"
@@ -42,7 +42,7 @@ const Header = () => {
                 }`}
             />
             <Moon
-                size={25}
+                size={20}
                 strokeWidth={2}
                 className={`z-10 ${
                 resolvedTheme === "dark"
