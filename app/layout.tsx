@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 
 // Google Font
 const manrope = Manrope({
-  variable: "--font-inter",
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
