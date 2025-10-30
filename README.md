@@ -8,7 +8,7 @@ This project is for learning purposes.
 ---
 
 ## 🌐 Live Demo
-👉 [View Live on Vercel](https://carhub-vert-iota.vercel.app/)
+👉 [View Live on Vercel](https://carhub-chi-lake.vercel.app/)
 
 ---
 
