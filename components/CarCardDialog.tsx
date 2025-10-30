@@ -18,7 +18,7 @@ const CarCardDialog = ({carData}: carTypes) => {
             <DialogTrigger asChild>
                 <button className="main-btn main-btn-blue w-full mt-5 lg:mt-0 lg:absolute top-0 right-0 lg:opacity-0 group-hover:opacity-100 self-center transition-all duration-500 hover:bg-[var(--color-main)]">View more</button>
             </DialogTrigger>
-        <DialogContent className="w-[40%] dark:bg-[var(--color-bg-second-dark)] gap-0 px-5 py-3">
+        <DialogContent className="md:w-[40%] dark:bg-[var(--color-bg-second-dark)] gap-1 pl-4 pr-2 py-3 h-fit overflow-y-scroll">
             <DialogClose asChild>
                 <button className="absolute right-2 top-2 rounded-full bg-gray-200 dark:bg-[var(--color-bg-third-dark)] hover:bg-gray-300 p-2 w-8 h-8 transition"></button>
             </DialogClose>
