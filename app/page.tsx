@@ -1,103 +1,150 @@
-import Image from "next/image";
+"use client"
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import Hero from "@/components/Hero";
+import CarCard from "@/components/CarCard";
+import SearchBar from "@/components/SearchBar";
+import CustomFilter from "@/components/CustomFilter";
+import MainBtn from "@/components/ui/MainBtn";
+import ScrollToTop from "@/components/ScrollToTop";
+
+import carsData from "@/data/cars";
+import { yearsOfProduction } from "@/data/catalogue";
+import { fuels } from "@/data/catalogue";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter()
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Selected values
+  const [selectedManufacturers, setselectedManufacturers] = useState<string | null>(null)
+  const [selectedModel, setselectedModel] = useState<string | null>(null)
+  const [selectedYear, setselectedYear] = useState<number| string | null>(null)
+  const [selectedFuel, setselectedFuel] = useState<string | null>(null)
+
+  // Number Of Visible Cars
+  const [carsLimit, setCarsLimit] = useState<number>(8)
+
+  // Get Values From URL
+  const searchParams = useSearchParams()
+  const manufacturer = searchParams.get("manufacturer")
+  const model = searchParams.get("model")
+  const year = searchParams.get("year")
+  const fuel = searchParams.get("fuel")
+
+  // Set Selected Values
+  useEffect(() => {
+    if (manufacturer) 
+      setselectedManufacturers(manufacturer)
+    if (model) 
+      setselectedModel(model)
+    if (year) 
+      setselectedYear(year)       
+    if (fuel) 
+      setselectedFuel(fuel)
+  }, [])
+
+  // Filter Cars
+  const filterCars = carsData.filter((car) => {
+  const matchesManufacturer = manufacturer ? 
+    manufacturer == "All" ? true : car.make.toLowerCase() === manufacturer.toLowerCase()
+    : true
+
+    const matchesModel = model ? car.model.toLowerCase().includes(model.toLowerCase()) : true
+
+    const matchYear = year ? 
+    year == "All" ? true : car.year.toString() === year
+    : true
+    
+    const matchFuel = fuel ? 
+    fuel == "All" ? true : car.fuel_type === fuel
+    : true
+
+    return matchesManufacturer && matchesModel && matchYear && matchFuel
+  })
+
+  // Convert Filterd Cars To Elements
+  const carsEles = filterCars.slice(0,carsLimit).map((car,index) => {
+    return <CarCard key={index} carData={car}></CarCard>
+  })
+
+  // Scroll To Cars Catalogue After Searching
+  useEffect(() => {
+    if (manufacturer || model || year || fuel) {
+      const carsSection = document.getElementById("catalogue")
+      if (carsSection) 
+        carsSection.scrollIntoView({behavior: "smooth"})
+    }
+    setCarsLimit(8)
+  }, [manufacturer , model , year , fuel])
+
+  // Click On Show More Cars
+  const showMoreCars = () : void => {
+    setCarsLimit((prev) => prev + 8)
+  }
+  
+  // Click On Clear All (Search And Filter)
+  const clearAll = () => {
+    setselectedManufacturers(null)
+    setselectedModel(null)
+    setselectedYear(null)
+    setselectedFuel(null)
+    setCarsLimit(8)
+
+    const searchParamsToClear = new URLSearchParams(window.location.search)
+    searchParamsToClear.delete("manufacturer")
+    searchParamsToClear.delete("model")
+    searchParamsToClear.delete("year")
+    searchParamsToClear.delete("fuel")
+
+    router.push(`${window.location.pathname}`)
+
+    setTimeout(() => { 
+      const carsSection = document.getElementById("catalogue"); 
+      if (carsSection) carsSection.scrollIntoView({ behavior: "smooth" }); 
+      }, 500); 
+  }
+
+  return (
+    <>
+    <Hero />
+    <div className="catalogue container my-20 py-5" id="catalogue">
+      <div>
+        <h2 className="text-5xl">Car Catalogue</h2>
+        <p className="text-[20px] my-4">Explore our cars you might like</p>
+      </div>
+
+      {/* Search And Filter */}
+      <div className="search-bar flex flex-col lg:flex-row lg:items-center justify-between gap-y-5 my-12">
+        <div className=" flex flex-col lg:flex-row md:gap-x-8 justify-between items-start lg:items-center gap-5">
+          <SearchBar selectedManufacturers={selectedManufacturers} setselectedManufacturers={setselectedManufacturers} selectedModel={selectedModel} setselectedModel={setselectedModel}  />
+          <div className="flex items-center gap-x-1">
+            <CustomFilter title="Year" options={yearsOfProduction} selectedOption={selectedYear} setSelectedOption={setselectedYear}></CustomFilter>
+            <CustomFilter title="Fuel" options={fuels} selectedOption={selectedFuel} setSelectedOption={setselectedFuel}></CustomFilter>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+          <button 
+            onClick={clearAll}   
+            disabled={!manufacturer && !model && !year && !fuel}
+            className={`w-[80px] text-md bg-red-700 text-white rounded-md py-1 lg:ml-3 ${!manufacturer && !model && !year && !fuel? "opacity-50 cursor-not-allowed" : ""}`}
+            >Clear All
+          </button>        
+      </div>
+        
+      {/* Cars */}
+      <div className={`cars grid ${carsEles.length == 0 ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"} gap-6`}>
+        {carsEles.length == 0 ? <p className="text-xl text-center">No Cars Found</p> : carsEles}
+      </div>
+      <div className="flex justify-center mt-5">
+        {carsEles.length > 0 && carsLimit < filterCars.length &&  (
+          <MainBtn textValue="Show more" handleClick={showMoreCars} styles="main-btn-blue"></MainBtn>)
+        }
+      </div>
     </div>
+
+    <ScrollToTop></ScrollToTop> {/* Scroll To Top Arrow */}
+    </>
   );
 }
