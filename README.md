@@ -14,11 +14,11 @@ This project is for learning purposes.
 
 ## 📌 Features
 - Explore a variety of cars with detailed information  
-- Search by manufacturer (combobox) and model (text input)  
-- Filter cars by year and fuel type using Shadcn UI components  
+- Search by manufacturer and model 
+- Filter cars by year and fuel type 
 - Clear All button to reset search and filters  
 - Dark & Light mode toggle  
-- Show More button to load additional cars  
+- "Show More" button to load additional cars  
 - Fully responsive — works perfectly on all mobile, tablet, and desktop screens
 - Responsive and modern design  
 
@@ -42,20 +42,21 @@ This project is for learning purposes.
 ---
 
 ## 🖼️ Resources
-- Car images from [Vecteezy](https://www.vecteezy.com/png/59107684-side-view-white-sedan-car)
+- Car images from [Vecteezy](https://www.vecteezy.com)
 
 ---
 
 ## 🚀 How to Run Locally
 
-# 1. Clone the repository
+1. Clone the repository:
+   ```bash
 git clone https://github.com/20Arwa/carHub.git
-cd carHub
+   cd carHub
 
-# 2. Install dependencies
-npm install
-# or
-yarn install
+2. Install dependencies:
+    ```bash
+    npm install
 
-# 3. Start the development server
-npm run dev
+3. Start the development server:
+    ```bash
+    npm run dev
